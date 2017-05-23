@@ -1,0 +1,110 @@
+#!/bin/bash 
+
+### BEGIN INIT INFO
+#
+# Provides: 		vb shared folders
+# Required-Start: 	$remote_fs $network
+# Required-Stop:	$remote_fs $network
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description: 	mounts vbox shared folders
+# Description:		mounts and unmounts the VBox shares
+#
+### END INIT INFO
+
+PNAME=$(basename $0)
+
+. /lib/lsb/init-functions
+
+USAGE="mount.shares start|restart|stop|status|help"
+
+#
+# The follwoingn two arrays must be the same size, they might best
+# be implemented as an associative array 
+#
+
+SHARES[0]=common
+SHARES[1]=local
+#SHARES[2]=data
+
+MOUNT[0]=/import/
+MOUNT[1]=/import/
+#MOUNT[2]="/"
+
+#
+# The elements variable needs to contain one value for each of the array
+# elements above
+#
+
+#elements="0 1 2"
+elements="0 1"
+
+statusflag=0
+
+getfs()
+{
+	log_daemon_msg $PNAME mounting $1
+	echo device name = $1
+	echo mount point = ${2}${1}
+	mount -t vboxsf -o rw,uid=1000 $1 ${2}/${1}
+	log_end_msg $?
+}
+
+umountfs()
+{
+	log_daemon_msg $PNAME unmounting $1
+	umount $1
+	log_end_msg $?
+}
+
+statusfs()
+{
+	log_daemon_msg $PNAME status of $1
+	lines=$(df | grep $1 | wc -l)
+	case $lines in 
+	0) :    # bad leg
+		log_end_msg 1
+	   ;;
+	*) :   # goodleg
+		log_end_msg 0
+	esac
+}
+
+
+case $1 in
+start)	:
+	#for sfs in ${SHARES[*]}
+	for i in ${elements}
+	do
+		sfs=${SHARES[${i}]}
+		mnt=${MOUNT[${i}]}
+		getfs $sfs $mnt
+	done
+	;;
+stop)	for sfs in ${SHARES[*]};do
+		umountfs $sfs
+	done
+	;;
+restart) :
+	for sfs in ${SHARES[*]};do
+		umountfs $sfs
+		sleep 2
+		getfs $sfs
+	done
+	;;
+status) :
+	for fs in ${SHARES[*]};do
+		statusfs $fs
+		if [  $? != 0 ];then
+			statusflag=1
+		fi
+	done
+	if [ $statusflag != 0 ];then
+		exit 1
+	fi
+	;;
+help)	echo $USAGE; exit 2
+	;;
+esac
+
+

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run script mountcommon to load vbox share common
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/mountcommon
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

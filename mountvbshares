@@ -23,6 +23,8 @@ USAGE="mount.shares start|restart|stop|status|help"
 # be implemented as an associative array 
 #
 
+#shares[*]. mount[*] and elements are system specific, they should be held in *.config so the code can be machine independent.
+
 SHARES[0]=common
 SHARES[1]=local
 #SHARES[2]=data
@@ -40,6 +42,8 @@ MOUNT[1]=/import/
 elements="0 1"
 
 statusflag=0
+
+# the log_daemon* calls are distro specific, this reliance should be remediated.
 
 getfs()
 {

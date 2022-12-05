@@ -10,3 +10,5 @@ The mount points are hard coded to sit within a top level directory called /impo
 Code for a third folder mounted in / has been commented out. It woulod be called /data and have the share name of data. 
 
 The share names are held in the SHARES[*] array; the mount points held in the MOUNT[*] array. The list element must agree with the number of elements in both arrays.
+
+./mountcommon and a service description file were added. I droped the need for a data and local system specific mount at this point. I also explored the use of alternative error message writers. 

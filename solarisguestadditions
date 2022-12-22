@@ -1,0 +1,14 @@
+#!/bin/sh
+
+USAGE="`basename $0` [ install | uninstall | help ]"
+# must be superuser
+#
+if [ `whoami` != 'root' ];then
+  echo you are not superuser ; exit 1
+fi
+
+case $1 in
+install)    pkgadd -G -d ./VBoxSolarisAdditions.pkg ; ;;
+uninstall)  pkgrm SUNWvboxguest ; ;;
+*)          echo $USAGE ; exit 1 ; ;;
+esac

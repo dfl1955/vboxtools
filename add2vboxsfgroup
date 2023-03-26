@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+# this program checks if the user $1 is in the vboxsf group and
+# if run as root, adds that user to the group
+
+USAGE="$0 username"
+
+if [ -z $1 ];then
+	user2add=dave
+else
+	user2add=$1
+fi
+	
+me=$(whoami)
+echo $0 running as ${me}
+
+case ${me} in
+root)	echo running as root, will add $user2add to vboxsf
+    	entries=$(grep vboxsf /etc/group | grep $user2add | wc -l)
+        case $entries  in
+	0)	: # needs the echo removed
+		echo usermod -G vboxsf ${user2add}; ;;
+	1)	echo ${user2add} already in vboxsf group; ;;
+	esac
+        exit; ;;
+${user2add})	:
+	echo running as $user2add
+        entries=$(grep vboxsf /etc/group | grep $user2add | wc -l)
+        case $entries in
+	0)	echo ${user2add} is not in vboxsf, $USAGE as root; ;;
+	1)	echo ${user2add} already in vboxsf group ; ;;
+	esac
+	exit; ;;
+*)	echo $USAGE
+	exit; ;;
+esac
+	
+

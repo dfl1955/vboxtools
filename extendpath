@@ -1,0 +1,7 @@
+#!/bin/bash
+
+type -p VBoxManage.exe > /dev/null
+case $? in
+0)   : ;;
+1)   export PATH=/cygdrive/c/Program Files/Sun/xVM VirtualBox:${PATH} ;;
+esac

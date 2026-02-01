@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# this needs to go, tied to cygwin and ore-oracle takeover
+
 type -p VBoxManage.exe > /dev/null
 case $? in
 0)   : ;;
